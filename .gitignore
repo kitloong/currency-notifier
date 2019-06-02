@@ -13,3 +13,4 @@ yarn-error.log
 /docker
 /build
 _ide_helper.php
+.phpstorm.meta.php
