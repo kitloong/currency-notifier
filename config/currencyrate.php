@@ -12,7 +12,9 @@ return [
             'rates' => [
                 'CNY' => 'USD',
                 'USD' => 'MYR'
-            ]
+            ],
+            'satisfactory_threshold' => 0.62,
+            'warning_threshold' => 0.60
         ]
     ],
 
@@ -20,5 +22,8 @@ return [
         'currency_converter_api' => [
             'key' => env('CURRENCY_CONVERTER_API_KEY')
         ]
-    ]
+    ],
+
+    // Supply multiple email by separated comma.
+    'recipients' => env('CURRENCY_NOTIFICATION_RECIPIENTS')
 ];
