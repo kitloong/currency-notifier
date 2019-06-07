@@ -26,6 +26,14 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')
         //          ->hourly();
+        $schedule->command('check:currencyrate')
+            ->dailyAt('09:30');
+
+        $schedule->command('check:currencyrate')
+            ->dailyAt('13:00');
+
+        $schedule->command('check:currencyrate')
+            ->dailyAt('16:00');
     }
 
     /**
