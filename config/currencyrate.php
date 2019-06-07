@@ -9,7 +9,7 @@
 return [
     'profile' => [
         1 => [
-            'rates' => [
+            'currencies' => [
                 'CNY' => 'USD',
                 'USD' => 'MYR'
             ],

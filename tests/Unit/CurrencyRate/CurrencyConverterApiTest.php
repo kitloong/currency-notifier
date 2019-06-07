@@ -9,6 +9,7 @@
 namespace Tests\Unit\CurrencyRate;
 
 use App\CurrencyRate\CurrencyConverterApi;
+use App\CurrencyRate\CurrencyProfile;
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
@@ -26,20 +27,6 @@ use Tests\TestCase;
 class CurrencyConverterApiTest extends TestCase
 {
     /**
-     * @var CurrencyConverterApi
-     */
-    private $api;
-
-    /**
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
-     */
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->api = $this->app->make(CurrencyConverterApi::class);
-    }
-
-    /**
      * @throws Exception
      */
     public function testGetRate()
@@ -50,14 +37,14 @@ class CurrencyConverterApiTest extends TestCase
         $handler = HandlerStack::create($mock);
         $client = new Client(['handler' => $handler]);
         $this->app->instance(Client::class, $client);
-        $rate = $this->api->getRate(1);
+        $rate = resolve(CurrencyConverterApi::class)->getRate(new CurrencyProfile(1));
         $this->assertSame(0.60686878928, $rate);
     }
 
     /**
      * @throws Exception
      */
-    public function testGetRateMethodArguments()
+    public function testGetRateMethodCheckArguments()
     {
         $mockClient = Mockery::mock(Client::class);
         $mockResponse = Mockery::mock(ResponseInterface::class);
@@ -80,7 +67,7 @@ class CurrencyConverterApiTest extends TestCase
             ->once()
             ->andReturn($mockResponse);
         $this->app->instance(Client::class, $mockClient);
-        $this->api->getRate(1);
+        resolve(CurrencyConverterApi::class)->getRate(new CurrencyProfile(1));
     }
 
     /**
@@ -95,7 +82,6 @@ class CurrencyConverterApiTest extends TestCase
         $handler = HandlerStack::create($mock);
         $client = new Client(['handler' => $handler]);
         $this->app->instance(Client::class, $client);
-        $rate = $this->api->getRate(1);
-        $this->assertSame(0.60686878928, $rate);
+        resolve(CurrencyConverterApi::class)->getRate(new CurrencyProfile(1));
     }
 }

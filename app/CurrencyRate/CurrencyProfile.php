@@ -22,12 +22,24 @@ final class CurrencyProfile
     /**
      * @var array
      */
-    private $rates;
+    private $currencies;
+
+    /**
+     * @var float
+     */
+    private $satisfactoryThreshold;
+
+    /**
+     * @var float
+     */
+    private $warningThreshold;
 
     public function __construct(int $id)
     {
         $this->id = $id;
-        $this->rates = config('currencyrate.profile.' . $id . '.rates');
+        $this->currencies = config('currencyrate.profile.' . $id . '.currencies');
+        $this->satisfactoryThreshold = (float) config('currencyrate.profile.' . $id . '.satisfactory_threshold');
+        $this->warningThreshold = (float) config('currencyrate.profile.' . $id . '.warning_threshold');
     }
 
     /**
@@ -41,8 +53,24 @@ final class CurrencyProfile
     /**
      * @return array
      */
-    public function getRates(): array
+    public function getCurrencies(): array
     {
-        return $this->rates;
+        return $this->currencies;
+    }
+
+    /**
+     * @return float
+     */
+    public function getSatisfactoryThreshold(): float
+    {
+        return $this->satisfactoryThreshold;
+    }
+
+    /**
+     * @return float
+     */
+    public function getWarningThreshold(): float
+    {
+        return $this->warningThreshold;
     }
 }

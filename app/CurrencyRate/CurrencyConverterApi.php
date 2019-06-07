@@ -38,22 +38,20 @@ final class CurrencyConverterApi implements CurrencyApi
     }
 
     /**
-     * @param int $profileId
+     * @param CurrencyProfile $profile
      * @return float
      * @throws Exception
      */
-    public function getRate(int $profileId): float
+    public function getRate(CurrencyProfile $profile): float
     {
-        $profile = new CurrencyProfile($profileId);
-
         $params = [];
-        foreach ($profile->getRates() as $from => $to) {
+        foreach ($profile->getCurrencies() as $from => $to) {
             $params[] = $from . '_' . $to;
         }
         $result = $this->convert($params);
         $resultJson = \GuzzleHttp\json_decode($result);
 
-        $rate = 1;
+        $rate = 1; // base number
         foreach ($resultJson as $curRate) {
             $rate *= floatval($curRate);
         }

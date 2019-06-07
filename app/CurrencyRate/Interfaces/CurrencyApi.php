@@ -8,6 +8,7 @@
 
 namespace App\CurrencyRate\Interfaces;
 
+use App\CurrencyRate\CurrencyProfile;
 use Exception;
 
 /**
@@ -18,9 +19,9 @@ interface CurrencyApi
 {
     /**
      * Get currency rate from profile.
-     * @param int $profileId
+     * @param CurrencyProfile $profile
      * @return float
      * @throws Exception
      */
-    public function getRate(int $profileId): float;
+    public function getRate(CurrencyProfile $profile): float;
 }
