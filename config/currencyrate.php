@@ -15,6 +15,13 @@ return [
             ],
             'satisfactory_threshold' => 0.62,
             'warning_threshold' => 0.60
+        ],
+        2 => [
+            'currencies' => [
+                'CNY' => 'USD'
+            ],
+            'satisfactory_threshold' => 0.15,
+            'warning_threshold' => 0.14
         ]
     ],
 

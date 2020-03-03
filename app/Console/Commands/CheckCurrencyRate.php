@@ -24,7 +24,7 @@ class CheckCurrencyRate extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Get defined currency rates';
 
     private $currencyApi;
 
@@ -49,36 +49,38 @@ class CheckCurrencyRate extends Command
      */
     public function handle()
     {
-        $profile = new CurrencyProfile(1);
+        foreach (config('currencyrate.profile') as $profileId => $profile) {
+            $profile = new CurrencyProfile($profileId);
 
-        $attempts = 0;
-        do {
-            try {
-                $rate = $this->currencyApi->getRate($profile);
-            } catch (Exception $exception) {
-                // Retry
-                $attempts++;
-                continue;
+            $attempts = 0;
+            do {
+                try {
+                    $rate = $this->currencyApi->getRate($profile);
+                } catch (Exception $exception) {
+                    // Retry
+                    $attempts++;
+                    continue;
+                }
+
+                // Exit
+                break;
+            } while ($attempts < self::NUM_OF_ATTEMPTS);
+
+            if (isset($rate)) {
+                $currencyRate = new CurrencyRate();
+                $currencyRate->profile_id = $profileId;
+                $currencyRate->currency_rate = $rate;
+                $currencyRate->save();
+
+                $recipients = explode(',', config('currencyrate.recipients'));
+
+                foreach ($recipients as $recipient) {
+                    Notification::route('mail', $recipient)
+                        ->notify(new CurrencyRateChecked($profile, $rate));
+                }
+            } else {
+                throw new Exception('Failed to get currency rate after retried ' . $attempts . ' times.');
             }
-
-            // Exit
-            break;
-        } while ($attempts < self::NUM_OF_ATTEMPTS);
-
-        if (isset($rate)) {
-            $currencyRate = new CurrencyRate();
-            $currencyRate->profile_id = 1;
-            $currencyRate->currency_rate = $rate;
-            $currencyRate->save();
-
-            $recipients = explode(',', config('currencyrate.recipients'));
-
-            foreach ($recipients as $recipient) {
-                Notification::route('mail', $recipient)
-                    ->notify(new CurrencyRateChecked($profile, $rate));
-            }
-        } else {
-            throw new Exception('Failed to get currency rate after retried ' . $attempts . ' times.');
         }
     }
 }

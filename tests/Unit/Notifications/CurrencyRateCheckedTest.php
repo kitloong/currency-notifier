@@ -52,7 +52,11 @@ class CurrencyRateCheckedTest extends TestCase
         $message = $notification->toMail(null);
         $this->assertInstanceOf(MailMessage::class, $message);
         $this->assertSame(
-            __('mail/currency_rate_checked.body.normal', ['rate' => 0.61]),
+            __('mail/currency_rate_checked.body.normal', [
+                'from' => $profile->getFromCurrency(),
+                'to' => $profile->getToCurrency(),
+                'rate' => 0.61
+            ]),
             $message->viewData['text']
         );
     }
@@ -64,7 +68,11 @@ class CurrencyRateCheckedTest extends TestCase
         $message = $notification->toMail(null);
         $this->assertInstanceOf(MailMessage::class, $message);
         $this->assertSame(
-            __('mail/currency_rate_checked.body.good', ['rate' => 0.62]),
+            __('mail/currency_rate_checked.body.good', [
+                'from' => $profile->getFromCurrency(),
+                'to' => $profile->getToCurrency(),
+                'rate' => 0.62
+            ]),
             $message->viewData['text']
         );
     }
@@ -76,7 +84,11 @@ class CurrencyRateCheckedTest extends TestCase
         $message = $notification->toMail(null);
         $this->assertInstanceOf(MailMessage::class, $message);
         $this->assertSame(
-            __('mail/currency_rate_checked.body.bad', ['rate' => 0.60]),
+            __('mail/currency_rate_checked.body.bad', [
+                'from' => $profile->getFromCurrency(),
+                'to' => $profile->getToCurrency(),
+                'rate' => 0.60
+            ]),
             $message->viewData['text']
         );
     }
