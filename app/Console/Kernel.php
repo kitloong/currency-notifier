@@ -24,15 +24,14 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')
-        //          ->hourly();
-        $schedule->command('check:currencyrate')
+        // Change to your desire schedule
+        $schedule->command('currencyrate:notify')
             ->dailyAt('09:30');
 
-        $schedule->command('check:currencyrate')
+        $schedule->command('currencyrate:notify')
             ->dailyAt('13:00');
 
-        $schedule->command('check:currencyrate')
+        $schedule->command('currencyrate:notify')
             ->dailyAt('16:00');
     }
 
