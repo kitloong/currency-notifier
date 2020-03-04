@@ -40,14 +40,13 @@ class CurrencyRateCheckedTest extends TestCase
 
     public function testConstruct()
     {
-        $profile = new CurrencyProfile(1);
-        $notification = new CurrencyRateChecked($profile, 0.61);
+        $notification = new CurrencyRateChecked($this->stubCurrencyProfile(), 0.61);
         $this->assertInstanceOf(CurrencyRateChecked::class, $notification);
     }
 
     public function testToMailNormalRate()
     {
-        $profile = new CurrencyProfile(1);
+        $profile = $this->stubCurrencyProfile();
         $notification = new CurrencyRateChecked($profile, 0.61);
         $message = $notification->toMail(null);
         $this->assertInstanceOf(MailMessage::class, $message);
@@ -63,7 +62,7 @@ class CurrencyRateCheckedTest extends TestCase
 
     public function testToMailGoodRate()
     {
-        $profile = new CurrencyProfile(1);
+        $profile = $this->stubCurrencyProfile();
         $notification = new CurrencyRateChecked($profile, 0.62);
         $message = $notification->toMail(null);
         $this->assertInstanceOf(MailMessage::class, $message);
@@ -79,7 +78,7 @@ class CurrencyRateCheckedTest extends TestCase
 
     public function testToMailBadRate()
     {
-        $profile = new CurrencyProfile(1);
+        $profile = $this->stubCurrencyProfile();
         $notification = new CurrencyRateChecked($profile, 0.60);
         $message = $notification->toMail(null);
         $this->assertInstanceOf(MailMessage::class, $message);
@@ -91,5 +90,15 @@ class CurrencyRateCheckedTest extends TestCase
             ]),
             $message->viewData['text']
         );
+    }
+
+    private function stubCurrencyProfile(): CurrencyProfile
+    {
+        $profile = new CurrencyProfile();
+        $profile->id = 1;
+        $profile->currencies = 'CNY->USD->MYR';
+        $profile->satisfactory_threshold = 0.62;
+        $profile->warning_threshold = 0.60;
+        return $profile;
     }
 }

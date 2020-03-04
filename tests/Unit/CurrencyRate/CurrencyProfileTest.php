@@ -18,36 +18,27 @@ use Tests\TestCase;
  */
 class CurrencyProfileTest extends TestCase
 {
-    public function testConstruct()
+    public function testGetCurrenciesAttribute()
     {
-        $profile = new CurrencyProfile(1);
-        $this->assertInstanceOf(CurrencyProfile::class, $profile);
+        $profile = new CurrencyProfile();
+        $profile->currencies = 'CNY->USD->MYR';
+        $this->assertSame([
+            'CNY' => 'USD',
+            'USD' => 'MYR'
+        ], $profile->currencies);
     }
 
-    public function testGetId()
+    public function testGetFromCurrency()
     {
-        $profile = new CurrencyProfile(1);
-        $this->assertSame(1, $profile->getId());
+        $profile = new CurrencyProfile();
+        $profile->currencies = 'CNY->USD->MYR';
+        $this->assertSame('CNY', $profile->getFromCurrency());
     }
 
-    public function testGetCurrencies()
+    public function testGetToCurrency()
     {
-        Config::set('currencyrate.profile.1.currencies', ['USD' => 'MYR']);
-        $profile = new CurrencyProfile(1);
-        $this->assertSame(['USD' => 'MYR'], $profile->getCurrencies());
-    }
-
-    public function testGetSatisfactoryThreshold()
-    {
-        Config::set('currencyrate.profile.1.satisfactory_threshold', 2);
-        $profile = new CurrencyProfile(1);
-        $this->assertSame(2.0, $profile->getSatisfactoryThreshold());
-    }
-
-    public function testGetWarningThreshold()
-    {
-        Config::set('currencyrate.profile.1.warning_threshold', 3);
-        $profile = new CurrencyProfile(1);
-        $this->assertSame(3.0, $profile->getWarningThreshold());
+        $profile = new CurrencyProfile();
+        $profile->currencies = 'CNY->USD->MYR';
+        $this->assertSame('MYR', $profile->getToCurrency());
     }
 }
