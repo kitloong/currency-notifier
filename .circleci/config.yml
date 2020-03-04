@@ -29,10 +29,9 @@ jobs:
       # composer cache
       - restore_cache:
           keys:
-            # "composer.lock" can be used if it is committed to the repo
-            - v1-dependencies-{{ checksum "composer.json" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
+            - composer-v1-{{ checksum "composer.lock" }}
+            # fallback to using the latest cache if no exact match is found (See https://circleci.com/docs/2.0/caching/)
+            - composer-v1-
 
       - run: composer install -n --prefer-dist
 
@@ -40,19 +39,6 @@ jobs:
           key: composer-v1-{{ checksum "composer.lock" }}
           paths:
             - vendor
-
-      # node cache
-
-      - restore_cache:
-          keys:
-            - node-v4-{{ checksum "package.json" }}
-            - node-v4-
-      - run: npm install
-      - save_cache:
-          key: node-v4-{{ checksum "package.json" }}
-          paths:
-            - node_modules
-            - ~/.yarn
 
       # prepare the database
       #- run: touch storage/testing.sqlite
