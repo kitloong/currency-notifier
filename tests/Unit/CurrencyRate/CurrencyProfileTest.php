@@ -9,7 +9,6 @@
 namespace Tests\Unit\CurrencyRate;
 
 use App\CurrencyRate\CurrencyProfile;
-use Config;
 use Tests\TestCase;
 
 /**
