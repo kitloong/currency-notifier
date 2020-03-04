@@ -45,7 +45,7 @@ final class CurrencyConverterApi implements CurrencyApi
     public function getRate(CurrencyProfile $profile): float
     {
         $params = [];
-        foreach ($profile->getCurrencies() as $from => $to) {
+        foreach ($profile->currencies as $from => $to) {
             $params[] = $from . '_' . $to;
         }
         $result = $this->convert($params);

@@ -51,9 +51,9 @@ class CurrencyRateChecked extends Notification
             'to' => $this->profile->getToCurrency(),
             'rate' => $this->rate
         ];
-        if ($this->rate >= $this->profile->getSatisfactoryThreshold()) {
+        if ($this->rate >= $this->profile->satisfactory_threshold) {
             $message = __('mail/currency_rate_checked.body.good', $messageArgs);
-        } elseif ($this->rate <= $this->profile->getWarningThreshold()) {
+        } elseif ($this->rate <= $this->profile->warning_threshold) {
             $message = __('mail/currency_rate_checked.body.bad', $messageArgs);
         } else {
             $message = __('mail/currency_rate_checked.body.normal', $messageArgs);

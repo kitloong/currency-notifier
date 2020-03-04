@@ -3,9 +3,9 @@
 namespace App\Console\Commands;
 
 use App\CurrencyRate;
-use App\CurrencyRate\CurrencyProfile;
 use App\CurrencyRate\Interfaces\CurrencyApi;
 use App\Notifications\CurrencyRateChecked;
+use App\Repositories\Interfaces\CurrencyProfileRepository;
 use Exception;
 use Illuminate\Console\Command;
 use Notification;
@@ -17,16 +17,18 @@ class CheckCurrencyRate extends Command
      *
      * @var string
      */
-    protected $signature = 'check:currencyrate';
+    protected $signature = 'currencyrate:notify';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Get defined currency rates';
+    protected $description = 'Notify use with latest currency rate get from API';
 
     private $currencyApi;
+
+    private $currencyProfileRepository;
 
     private const NUM_OF_ATTEMPTS = 5;
 
@@ -34,12 +36,14 @@ class CheckCurrencyRate extends Command
      * Create a new command instance.
      *
      * @param CurrencyApi $currencyApi
+     * @param CurrencyProfileRepository $currencyProfileRepository
      */
-    public function __construct(CurrencyApi $currencyApi)
+    public function __construct(CurrencyApi $currencyApi, CurrencyProfileRepository $currencyProfileRepository)
     {
         parent::__construct();
 
         $this->currencyApi = $currencyApi;
+        $this->currencyProfileRepository = $currencyProfileRepository;
     }
 
     /**
@@ -49,9 +53,9 @@ class CheckCurrencyRate extends Command
      */
     public function handle()
     {
-        foreach (config('currencyrate.profile') as $profileId => $profile) {
-            $profile = new CurrencyProfile($profileId);
+        $currencyProfiles = $this->currencyProfileRepository->findAllByIsActive();
 
+        foreach ($currencyProfiles as $profile) {
             $attempts = 0;
             do {
                 try {
@@ -68,7 +72,7 @@ class CheckCurrencyRate extends Command
 
             if (isset($rate)) {
                 $currencyRate = new CurrencyRate();
-                $currencyRate->profile_id = $profileId;
+                $currencyRate->profile_id = $profile->id;
                 $currencyRate->currency_rate = $rate;
                 $currencyRate->save();
 
