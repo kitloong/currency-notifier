@@ -7,17 +7,6 @@
  */
 
 return [
-    'profile' => [
-        1 => [
-            'currencies' => [
-                'CNY' => 'USD',
-                'USD' => 'MYR'
-            ],
-            'satisfactory_threshold' => 0.62,
-            'warning_threshold' => 0.60
-        ]
-    ],
-
     'api' => [
         'currency_converter_api' => [
             'key' => env('CURRENCY_CONVERTER_API_KEY')

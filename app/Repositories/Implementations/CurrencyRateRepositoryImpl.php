@@ -10,6 +10,7 @@ namespace App\Repositories\Implementations;
 
 use App\CurrencyRate;
 use App\Repositories\Interfaces\CurrencyRateRepository;
+use Illuminate\Database\Eloquent\Collection;
 
 final class CurrencyRateRepositoryImpl implements CurrencyRateRepository
 {
@@ -20,12 +21,12 @@ final class CurrencyRateRepositoryImpl implements CurrencyRateRepository
         $this->model = CurrencyRate::class;
     }
 
-    public function find(int $id): ?CurrencyRate
+    public function findFirst(int $id): ?CurrencyRate
     {
         return CurrencyRate::find($id);
     }
 
-    public function all(): \Illuminate\Database\Eloquent\Collection
+    public function all(): Collection
     {
         return CurrencyRate::all();
     }

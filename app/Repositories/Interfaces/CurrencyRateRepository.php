@@ -9,17 +9,18 @@
 namespace App\Repositories\Interfaces;
 
 use App\CurrencyRate;
+use Illuminate\Database\Eloquent\Collection;
 
 interface CurrencyRateRepository
 {
     /**
      * @param int $id
-     * @return CurrencyRate|CurrencyRate[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|null
+     * @return CurrencyRate|null
      */
-    public function find(int $id): ?CurrencyRate;
+    public function findFirst(int $id): ?CurrencyRate;
 
     /**
-     * @return CurrencyRate[]|\Illuminate\Database\Eloquent\Collection
+     * @return CurrencyRate[]|Collection
      */
-    public function all(): \Illuminate\Database\Eloquent\Collection;
+    public function all(): Collection;
 }

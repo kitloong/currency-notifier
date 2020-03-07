@@ -37,7 +37,8 @@ class CurrencyConverterApiTest extends TestCase
         $handler = HandlerStack::create($mock);
         $client = new Client(['handler' => $handler]);
         $this->app->instance(Client::class, $client);
-        $rate = resolve(CurrencyConverterApi::class)->getRate(new CurrencyProfile(1));
+
+        $rate = resolve(CurrencyConverterApi::class)->getRate($this->stubCurrencyProfile());
         $this->assertSame(0.60686878928, $rate);
     }
 
@@ -67,7 +68,7 @@ class CurrencyConverterApiTest extends TestCase
             ->once()
             ->andReturn($mockResponse);
         $this->app->instance(Client::class, $mockClient);
-        resolve(CurrencyConverterApi::class)->getRate(new CurrencyProfile(1));
+        resolve(CurrencyConverterApi::class)->getRate($this->stubCurrencyProfile());
     }
 
     /**
@@ -82,6 +83,14 @@ class CurrencyConverterApiTest extends TestCase
         $handler = HandlerStack::create($mock);
         $client = new Client(['handler' => $handler]);
         $this->app->instance(Client::class, $client);
-        resolve(CurrencyConverterApi::class)->getRate(new CurrencyProfile(1));
+        resolve(CurrencyConverterApi::class)->getRate($this->stubCurrencyProfile());
+    }
+
+    private function stubCurrencyProfile(): CurrencyProfile
+    {
+        $profile = new CurrencyProfile();
+        $profile->id = 1;
+        $profile->currencies = 'CNY->USD->MYR';
+        return $profile;
     }
 }
