@@ -22,7 +22,9 @@ Create new entry into `currency_profile` table
 |warning_threshold|Rate at dangerous parameter|
 
 ### `currencies` format
+
 `CNY->USD` => Check currency rate from `CNY` to `USD`
+
 `CNY->USD->MYR` => Check currency rate from `CNY` to `USD` and `USD` to `MYR` in single calculation. 
     
 ### Email notification
