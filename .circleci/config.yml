@@ -15,7 +15,7 @@ jobs:
       # Using the RAM variation mitigates I/O contention
       # for database intensive operations.
       # - image: circleci/mysql:5.7-ram
-      # 
+      #
       # - image: redis:3
 
     steps:
@@ -40,19 +40,6 @@ jobs:
           key: composer-v1-{{ checksum "composer.lock" }}
           paths:
             - vendor
-
-      # node cache
-
-      - restore_cache:
-          keys:
-            - node-v4-{{ checksum "package.json" }}
-            - node-v4-
-      - run: npm install
-      - save_cache:
-          key: node-v4-{{ checksum "package.json" }}
-          paths:
-            - node_modules
-            - ~/.yarn
 
       # prepare the database
       #- run: touch storage/testing.sqlite
