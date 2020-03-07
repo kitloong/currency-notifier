@@ -3,52 +3,59 @@
 # Check https://circleci.com/docs/2.0/language-php/ for more details
 #
 version: 2
+
+# Define test steps
+test: &test
+  steps:
+    - checkout
+
+    - run: sudo apt update && sudo apt install zlib1g-dev libsqlite3-dev
+    - run: sudo docker-php-ext-install zip
+
+    # Download and cache dependencies
+
+    # composer cache
+    - restore_cache:
+        keys:
+          # "composer.lock" can be used if it is committed to the repo
+          - v1-dependencies-{{ checksum "composer.lock" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+
+    - run: composer install -n --prefer-dist
+
+    - save_cache:
+        key: composer-v1-{{ checksum "composer.lock" }}
+        paths:
+          - vendor
+
+    # prepare the database
+    #- run: touch storage/testing.sqlite
+    - run: php artisan migrate --env=testing --database=sqlite --force
+
+    # run tests with phpunit
+    - run: ./vendor/bin/phpunit --coverage-html ./build/test-coverage
+    - run: ./vendor/bin/phpcs --standard=phpcs.xml --report=checkstyle --report-file=./build/checkstyle.xml
+    - store_test_results:
+        path: build
+    - store_artifacts:
+        path: build
+
+# Define jobs
 jobs:
-  build:
+  php-7.3:
     docker:
-      # Specify the version you desire here
-      - image: circleci/php:7.3-stretch-node-browsers
+      - image: circleci/php:7.3.8-cli
+    <<: *test
+  php-7.4:
+    docker:
+      - image: circleci/php:7.4.3-cli
+    <<: *test
 
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # Using the RAM variation mitigates I/O contention
-      # for database intensive operations.
-      # - image: circleci/mysql:5.7-ram
-      #
-      # - image: redis:3
-
-    steps:
-      - checkout
-
-      - run: sudo apt update && sudo apt install zlib1g-dev libsqlite3-dev
-      - run: sudo docker-php-ext-install zip
-
-      # Download and cache dependencies
-
-      # composer cache
-      - restore_cache:
-          keys:
-            # "composer.lock" can be used if it is committed to the repo
-            - v1-dependencies-{{ checksum "composer.lock" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
-
-      - run: composer install -n --prefer-dist
-
-      - save_cache:
-          key: composer-v1-{{ checksum "composer.lock" }}
-          paths:
-            - vendor
-
-      # prepare the database
-      #- run: touch storage/testing.sqlite
-      - run: php artisan migrate --env=testing --database=sqlite --force
-
-      # run tests with phpunit
-      - run: ./vendor/bin/phpunit --coverage-html ./build/test-coverage
-      - run: ./vendor/bin/phpcs --standard=phpcs.xml --report=checkstyle --report-file=./build/checkstyle.xml
-      - store_test_results:
-          path: build
-      - store_artifacts:
-          path: build
+# Run jobs
+workflows:
+  version: 2
+  test:
+    jobs:
+      - php-7.3
+      - php-7.4
