@@ -40,44 +40,65 @@ class CurrencyRateCheckedTest extends TestCase
 
     public function testConstruct()
     {
-        $profile = new CurrencyProfile(1);
-        $notification = new CurrencyRateChecked($profile, 0.61);
+        $notification = new CurrencyRateChecked($this->stubCurrencyProfile(), 0.61);
         $this->assertInstanceOf(CurrencyRateChecked::class, $notification);
     }
 
     public function testToMailNormalRate()
     {
-        $profile = new CurrencyProfile(1);
+        $profile = $this->stubCurrencyProfile();
         $notification = new CurrencyRateChecked($profile, 0.61);
         $message = $notification->toMail(null);
         $this->assertInstanceOf(MailMessage::class, $message);
         $this->assertSame(
-            __('mail/currency_rate_checked.body.normal', ['rate' => 0.61]),
+            __('mail/currency_rate_checked.body.normal', [
+                'from' => $profile->getFromCurrency(),
+                'to' => $profile->getToCurrency(),
+                'rate' => 0.61
+            ]),
             $message->viewData['text']
         );
     }
 
     public function testToMailGoodRate()
     {
-        $profile = new CurrencyProfile(1);
+        $profile = $this->stubCurrencyProfile();
         $notification = new CurrencyRateChecked($profile, 0.62);
         $message = $notification->toMail(null);
         $this->assertInstanceOf(MailMessage::class, $message);
         $this->assertSame(
-            __('mail/currency_rate_checked.body.good', ['rate' => 0.62]),
+            __('mail/currency_rate_checked.body.good', [
+                'from' => $profile->getFromCurrency(),
+                'to' => $profile->getToCurrency(),
+                'rate' => 0.62
+            ]),
             $message->viewData['text']
         );
     }
 
     public function testToMailBadRate()
     {
-        $profile = new CurrencyProfile(1);
+        $profile = $this->stubCurrencyProfile();
         $notification = new CurrencyRateChecked($profile, 0.60);
         $message = $notification->toMail(null);
         $this->assertInstanceOf(MailMessage::class, $message);
         $this->assertSame(
-            __('mail/currency_rate_checked.body.bad', ['rate' => 0.60]),
+            __('mail/currency_rate_checked.body.bad', [
+                'from' => $profile->getFromCurrency(),
+                'to' => $profile->getToCurrency(),
+                'rate' => 0.60
+            ]),
             $message->viewData['text']
         );
+    }
+
+    private function stubCurrencyProfile(): CurrencyProfile
+    {
+        $profile = new CurrencyProfile();
+        $profile->id = 1;
+        $profile->currencies = 'CNY->USD->MYR';
+        $profile->satisfactory_threshold = 0.62;
+        $profile->warning_threshold = 0.60;
+        return $profile;
     }
 }

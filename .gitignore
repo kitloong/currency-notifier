@@ -10,7 +10,8 @@ Homestead.yaml
 npm-debug.log
 yarn-error.log
 /.idea
-/docker
 /build
 _ide_helper.php
 .phpstorm.meta.php
+/public/css/
+/public/js/

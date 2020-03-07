@@ -1,76 +1,57 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: liow.kitloong
- * Date: 2019-06-02
- * Time: 17:47
- */
 
 namespace App\CurrencyRate;
 
+use Illuminate\Database\Eloquent\Model;
+
 /**
- * Class CurrencyProfile
- * @package App\CurrencyRate
+ * App\CurrencyRate\CurrencyProfile
+ *
+ * @property int $id
+ * @property array $currencies
+ * @property float $satisfactory_threshold
+ * @property float $warning_threshold
+ * @property int $is_active
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\CurrencyRate\CurrencyProfile newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\CurrencyRate\CurrencyProfile newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\CurrencyRate\CurrencyProfile query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\CurrencyRate\CurrencyProfile whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\CurrencyRate\CurrencyProfile whereCurrencies($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\CurrencyRate\CurrencyProfile whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\CurrencyRate\CurrencyProfile whereIsActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\CurrencyRate\CurrencyProfile whereSatisfactoryThreshold($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\CurrencyRate\CurrencyProfile whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\CurrencyRate\CurrencyProfile whereWarningThreshold($value)
+ * @mixin \Eloquent
  */
-final class CurrencyProfile
+class CurrencyProfile extends Model
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private const CURRENCY_SEPARATOR = '->';
 
-    /**
-     * @var array
-     */
-    private $currencies;
-
-    /**
-     * @var float
-     */
-    private $satisfactoryThreshold;
-
-    /**
-     * @var float
-     */
-    private $warningThreshold;
-
-    public function __construct(int $id)
+    public function getCurrenciesAttribute(string $value): array
     {
-        $this->id = $id;
-        $this->currencies = config('currencyrate.profile.' . $id . '.currencies');
-        $this->satisfactoryThreshold = (float) config('currencyrate.profile.' . $id . '.satisfactory_threshold');
-        $this->warningThreshold = (float) config('currencyrate.profile.' . $id . '.warning_threshold');
+        $currencyMap = [];
+        $currencies = explode(self::CURRENCY_SEPARATOR, $value);
+        foreach ($currencies as $index => $currency) {
+            if ($index === 0) {
+                continue;
+            }
+
+            $currencyMap[$currencies[$index-1]] = $currencies[$index];
+        }
+
+        return $currencyMap;
     }
 
-    /**
-     * @return int
-     */
-    public function getId(): int
+    public function getFromCurrency(): string
     {
-        return $this->id;
+        return key($this->currencies);
     }
 
-    /**
-     * @return array
-     */
-    public function getCurrencies(): array
+    public function getToCurrency(): string
     {
-        return $this->currencies;
-    }
-
-    /**
-     * @return float
-     */
-    public function getSatisfactoryThreshold(): float
-    {
-        return $this->satisfactoryThreshold;
-    }
-
-    /**
-     * @return float
-     */
-    public function getWarningThreshold(): float
-    {
-        return $this->warningThreshold;
+        return last($this->currencies);
     }
 }
