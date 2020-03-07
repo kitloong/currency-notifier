@@ -48,6 +48,16 @@ Below `warning_threshold`
     
     # Create tables
     php artisan migrate
+    
+    # Create your own currency profile
+    # Example
+    INSERT INTO currency_profiles (`currencies`, `satisfactory_threshold`, `warning_threshold`, `is_active`, `created_at`, `updated_at`)
+    VALUES ('CNY->MYR', 0.62, 0.6, true, NOW(), NOW());
+    
+    # Setup crontab
+    * * * * * cd /path-to-your-project && php artisan schedule:run >> /dev/null 2>&1
+    
+Notifier is working now!
 
 ## Configure pre-commit
 
