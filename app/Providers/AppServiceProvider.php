@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Repositories\Implementations\CurrencyProfileRepositoryImpl;
 use App\Repositories\Implementations\CurrencyRateRepositoryImpl;
+use App\Repositories\Interfaces\CurrencyProfileRepository;
 use App\Repositories\Interfaces\CurrencyRateRepository;
 use GuzzleHttp\Client;
 use Illuminate\Support\ServiceProvider;
@@ -10,6 +12,7 @@ use Illuminate\Support\ServiceProvider;
 class AppServiceProvider extends ServiceProvider
 {
     public $singletons = [
+        CurrencyProfileRepository::class => CurrencyProfileRepositoryImpl::class,
         CurrencyRateRepository::class => CurrencyRateRepositoryImpl::class
     ];
 

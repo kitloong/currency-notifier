@@ -8,8 +8,8 @@
 
 return [
     'body' => [
-        'normal' => 'Hello, <br />Currency rate is now :rate. Have a nice day!',
-        'good' => 'Good news!<br />Currency rate is now :rate. Go to bank asap!',
-        'bad' => 'Bad news :((((! <br />Currency rate is now :rate. Please judge!'
+        'normal' => 'Hello, <br />:from => :to is now :rate. Have a nice day!',
+        'good' => 'Good news!<br />:from => :to is now :rate. Go to bank asap!',
+        'bad' => 'Bad news! <br />:from => :to is now :rate. Please judge!'
     ]
 ];
