@@ -2,21 +2,49 @@
 
 [![CircleCI](https://circleci.com/gh/kitloong/currency-notifier.svg?style=svg)](https://circleci.com/gh/kitloong/currency-notifier)
 
-As working at oversea it is troublesome to check currency rate everyday in order to make oversea transfer at desired rate.  
+It is troublesome to check currency rate everyday in order to make oversea transfer at desired rate.  
 
-This is a simple scheduler script to notify whenever currency rate increased/dropped to preset desired rate.
+This is a simple scheduler script to notify users when currency rate increased/dropped to preset rate.
 
-## Run
+## Setup
+
+    composer install
+    
+    # Create tables
+    php artisan migrate
+    
+    # Swagger
+    php artisan l5-swagger:generate
+    
+    # Create your own currency_profile via Swagger UI
+    http://localhost/api/documentation
+    
+    # Add following to your crontab
+    * * * * * cd /path-to-your-project && php artisan schedule:run >> /dev/null 2>&1
+    
+Notifier is working now!
+
+### Set your schedule time
+
+Feel free to update your preferred receive notification time at `app\Console\Kernel.php`
+
+    $schedule->command('currencyrate:notify')
+        ->dailyAt('09:30');
+    
+    $schedule->command('currencyrate:notify')
+        ->dailyAt('13:00');
+
+    $schedule->command('currencyrate:notify')
+        ->dailyAt('16:00');
+    
+## Manual run
 
     php artisan currencyrate:notify
     
-### Configuration
-
-Create new entry into `currency_profile` table 
+## currency_profile
 
 |Name|Comment|
 |---|---|
-|id||
 |currencies|Currency rate you wish to check with|
 |satisfactory_threshold|Rate that you are happy with|
 |warning_threshold|Rate at dangerous parameter|
@@ -43,23 +71,6 @@ Below `warning_threshold`
 
     Bad news! 
     CNY => MYR is now 0.593797598743. Please judge!
-
-## Install
-
-    composer install
-    
-    # Create tables
-    php artisan migrate
-    
-    # Create your own currency profile
-    # Example
-    INSERT INTO currency_profiles (`currencies`, `satisfactory_threshold`, `warning_threshold`, `is_active`, `created_at`, `updated_at`)
-    VALUES ('CNY->MYR', 0.62, 0.6, true, NOW(), NOW());
-    
-    # Setup crontab
-    * * * * * cd /path-to-your-project && php artisan schedule:run >> /dev/null 2>&1
-    
-Notifier is working now!
 
 ## Configure pre-commit
 
