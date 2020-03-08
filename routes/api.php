@@ -16,3 +16,9 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::get('currency-profiles', 'Api\CurrencyProfileController@index');
+Route::get('currency-profiles/{currencyProfile}', 'Api\CurrencyProfileController@show');
+Route::post('currency-profiles', 'Api\CurrencyProfileController@store');
+Route::put('currency-profiles/{currencyProfile}', 'Api\CurrencyProfileController@update');
+Route::delete('currency-profiles/{currencyProfile}', 'Api\CurrencyProfileController@destroy');

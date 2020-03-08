@@ -16,5 +16,10 @@ interface CurrencyProfileRepository
     /**
      * @return CurrencyProfile[]|Collection
      */
+    public function findAll(): Collection;
+
+    /**
+     * @return CurrencyProfile[]|Collection
+     */
     public function findAllByIsActive(): Collection;
 }
