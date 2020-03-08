@@ -17,6 +17,14 @@ class CurrencyProfileRepositoryImpl implements CurrencyProfileRepository
     /**
      * @inheritDoc
      */
+    public function findAll(): Collection
+    {
+        return CurrencyProfile::all();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function findAllByIsActive(): Collection
     {
         return CurrencyProfile::where('is_active', '=', true)
